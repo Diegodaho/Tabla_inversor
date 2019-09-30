@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Banco</title>
+        
+        <f:event type="preRenderView" listener="#{inicioAdministradorController.obtenerInversores()}" />
+    </h:head>
+    <h:body>
+        
+        <h:form id="addInversor">
+            <p:panel header="#{msg.headerForm}">
+                <p:growl id="grAdd" showDetail="true" />
+                <p:panelGrid columns="3">
+                    <p:outputLabel for="nombre" value="#{msg.lblNombreInversor}"/>
+                    <p:inputText id="nombre" value="#{inicioAdministradorController.nombre}" required="true" />
+                    <p:message for="nombre" />
+                    <p:outputLabel for="cuenta" value="#{msg.lblNoCuenta}" />
+                    <p:inputText id="cuenta" value="#{inicioAdministradorController.cuenta}" required="true" />
+                    <p:message for="cuenta" />
+                </p:panelGrid>
+                <p:commandButton value="#{msg.btnGuardar}" action="#{inicioAdministradorController.agregarInversor()}" update=":addInversor, :dtInversor:dataInv" />
+            </p:panel>
+        </h:form>
+        <h:form id="dtInversor">
+            <p:panel id="datos">
+                <p:growl id="msgs" showDetail="true"/>
+
+                <p:dataTable id="dataInv" var="inversor" value="#{inicioAdministradorController.listaInversores}" editable="true" style="margin-bottom:20px">
+                    <f:facet name="header">
+                        Listado de Inversores
+                    </f:facet>
+
+                    <p:ajax event="rowEdit" listener="#{inicioAdministradorController.onRowEdit}" update=":dtInversor" />
+                    <p:ajax event="rowEditCancel" listener="#{inicioAdministradorController.onRowCancel}" update=":dtInversor" />
+
+                    <p:column headerText="Id">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{inversor.id}" /></f:facet>
+                            <f:facet name="input"><p:inputText id="modelInput" value="#{inversor.id}" style="width:100%"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Nombre">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{inversor.nombre}" /></f:facet>
+                            <f:facet name="input"><p:inputText value="#{inversor.nombre}" style="width:100%" label="Year"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Cuenta">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{inversor.cuenta.numeroCuenta}" /></f:facet>
+                            <f:facet name="input"><p:inputText value="#{inicioAdministradorController.cuenta}" style="width:100%" label="Year"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column style="width:100px;">
+                        <p:rowEditor />
+                        <p:commandButton id="btnEliminar" class="glyphicon glyphicon-trash" value="Eliminar" title="Eliminar" actionListener="#{inicioAdministradorController.eliminarInversor(inversor)}" update=":dtInversor" >
+                            <p:confirm header="Alerta" message="Está seguro que desea elimianr el Inversor?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:tooltip id="toolTipFade" for="btnEliminar" value="Eliminar" />
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-solid box-danger">
+                            <p:commandButton value="Si" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes" icon="fa fa-check" />
+                            <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no" icon="fa fa-times" />
+                        </p:confirmDialog>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </h:body>
+</html>
+

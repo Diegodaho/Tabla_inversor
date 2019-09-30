@@ -7,28 +7,35 @@ package com.mycompany.controlador;
 
 import com.mycompany.dto.DTOCuenta;
 import com.mycompany.dto.DTOInversor;
-import com.mycompany.dto.DTOUsuario;
+import com.mycompany.entity.Cuenta;
+import com.mycompany.entity.Inversor;
 import com.mycompany.interfaces.InversorFacadeLocal;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.primefaces.event.RowEditEvent;
 
 /**
  *
- * @author Yonathan
+ * @author narukom
  */
 @Named
 @SessionScoped
 public class InicioAdministradorController implements Serializable{
 
-    private DTOUsuario user;
+   
     
     private String nombre;
     private String cuenta;
+    private List<Inversor> listaInversores;
+    private Inversor inv;
     
     @EJB
     InversorFacadeLocal inversorCon;
@@ -36,9 +43,15 @@ public class InicioAdministradorController implements Serializable{
      * Creates a new instance of InicioAdministradorController
      */
     public InicioAdministradorController() {
+        listaInversores=new ArrayList();
     }
     
-    public void validarSesion() {
+    @PostConstruct
+    public void _init(){
+        listaInversores = inversorCon.findAll();
+    }
+    
+   /*public void validarSesion() {
         try {
             FacesContext faces = FacesContext.getCurrentInstance();
             DTOUsuario usuario = (DTOUsuario) faces.getExternalContext().getSessionMap().get("usuario");
@@ -61,12 +74,12 @@ public class InicioAdministradorController implements Serializable{
         } catch (Exception e) {
 
         }
-    }
+    }*/
 
-    public String cerrarSesion(){
+    /*public String cerrarSesion(){
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "login?faces-redirect=true";
-    }
+    }*/
     
     public void agregarInversor(){
         DTOInversor dtoInversor = new DTOInversor();
@@ -79,14 +92,39 @@ public class InicioAdministradorController implements Serializable{
                     "Inversor "+nombre+" agregado satisfactoriamente"));
     }
     
-    public DTOUsuario getUser() {
-        return user;
+    public void obtenerInversores(){
+        listaInversores = inversorCon.findAll();
     }
-
-    public void setUser(DTOUsuario user) {
-        this.user = user;
+    
+    public void onRowEdit(RowEditEvent event) {
+        inv = inversorCon.find(((Inversor) event.getObject()).getId());
+        inv.setNombre(((Inversor) event.getObject()).getNombre());
+        if(inv.getCuenta()!=null){
+            inv.getCuenta().setNumeroCuenta(cuenta);
+        }else{
+            Cuenta eCuenta = new Cuenta();
+            eCuenta.setNumeroCuenta(cuenta);
+            inv.setCuenta(eCuenta);
+            eCuenta.setInversor(inv);
+        }
+        inversorCon.edit(inv);
+        FacesMessage msg = new FacesMessage("Inversor Editado", ((Inversor) event.getObject()).getNombre());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-
+     
+    public void onRowCancel(RowEditEvent event) {
+        FacesMessage msg = new FacesMessage("Edición cancelada para el inversor ", ((Inversor) event.getObject()).getNombre());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+    
+    public void eliminarInversor(Inversor inversorSeleccionado) {
+        FacesMessage msg = new FacesMessage("Usuario", inversorSeleccionado.getNombre() + " eliminado");
+        inversorCon.remove(inversorSeleccionado);
+        obtenerInversores();
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+    
+   
     public String getNombre() {
         return nombre;
     }
@@ -101,6 +139,14 @@ public class InicioAdministradorController implements Serializable{
 
     public void setCuenta(String cuenta) {
         this.cuenta = cuenta;
+    }
+
+    public List<Inversor> getListaInversores() {
+        return listaInversores;
+    }
+
+    public void setListaInversores(List<Inversor> listaInversores) {
+        this.listaInversores = listaInversores;
     }
     
     

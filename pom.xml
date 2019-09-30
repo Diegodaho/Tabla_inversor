@@ -2,13 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>paquete</groupId>
-  <artifactId>tutorial-login</artifactId>
+  <artifactId>join-column</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>tutorial-login</name>
+  <name>join-column</name>
   <modules>
-    <module>tutorial-login-ear</module>
+    <module>join-column-ear</module>
+    <module>join-column-ejb</module>
+    <module>join-column-web</module>
     <module>tutorial-login-web</module>
-    <module>tutorial-login-ejb</module>
   </modules>
 </project>
