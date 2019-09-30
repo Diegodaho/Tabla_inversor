@@ -51,35 +51,7 @@ public class InicioAdministradorController implements Serializable{
         listaInversores = inversorCon.findAll();
     }
     
-   /*public void validarSesion() {
-        try {
-            FacesContext faces = FacesContext.getCurrentInstance();
-            DTOUsuario usuario = (DTOUsuario) faces.getExternalContext().getSessionMap().get("usuario");
-            if (usuario == null) {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
-                        "Está tratando de ingresar violentamente al sitio.");
-                faces.addMessage(null, msg);
-                faces.getExternalContext().getFlash().setKeepMessages(true);
-                faces.getExternalContext().redirect("./../login.xhtml");
-            }
-            else if(!usuario.getRol().equals("Administrador")){
-                FacesContext context = FacesContext.getCurrentInstance();
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
-                        "No tiene permisos para ingresar a esta sección del sitio.");
-                faces.addMessage(null, msg);
-                context.getExternalContext().getFlash().setKeepMessages(true);
-                faces.getExternalContext().redirect(usuario.getRol().toLowerCase()+"/inicio.xhtml");
-            }
-            user=usuario;
-        } catch (Exception e) {
-
-        }
-    }*/
-
-    /*public String cerrarSesion(){
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        return "login?faces-redirect=true";
-    }*/
+  
     
     public void agregarInversor(){
         DTOInversor dtoInversor = new DTOInversor();
